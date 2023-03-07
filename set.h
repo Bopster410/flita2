@@ -14,10 +14,10 @@ typedef struct set {
 
 
 // Adds element [newElement] to set
-void addSetElement(set **ppSet, void *newElement, type valueType);
+set* addSetElement(set *pSet, void *newElement, type valueType);
 
 // Removes element [element] from set
-void removeSetElement(set **headElement, set **ppSet, void *element);
+set* removeSetElement(set *pSet, void *element);
 
 // Prints all set elements
 void printSet(set *pSet);

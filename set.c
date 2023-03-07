@@ -2,42 +2,43 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include <stdbool.h>
 
-void addSetElement(set **ppSet, void* newElement, type valueType) {
-    int isFirstElement = (*ppSet) == NULL, isIntSet;
+set *addSetElement(set *pSet, void *newElement, type valueType) {
+    bool isFirstElement = pSet == NULL, isInSetEl;
     if (!isFirstElement) {
-        isIntSet = isInSet(*ppSet, newElement);
+        isInSetEl = isInSet(pSet, newElement);
     }
-    if (isFirstElement || !isIntSet){
+    if (isFirstElement || !isInSetEl) {
         set *pTemp = malloc(sizeof(set));
         pTemp->value = newElement;
-        pTemp->nextElement = *ppSet;
+        pTemp->nextElement = pSet;
         pTemp->valueType = valueType;
-        *ppSet = pTemp;
+        return pTemp;
     }
+    return pSet;
 }
 
-void removeSetElement(set **ppHeadElement, set **ppSet, void* element) {
-    set *nextElement = (*ppSet)->nextElement;
-    set *currentElement = (*ppSet);
-    if (nextElement->value == element) {
-        currentElement->nextElement = nextElement->nextElement;
+set *removeSetElement(set *pSet, void *element) {
+    set *nextElement = pSet->nextElement;
+    if (pSet->value == element) {
+        pSet = pSet->nextElement;
+        return pSet;
+    } else if (nextElement->value == element) {
+        pSet->nextElement = nextElement->nextElement;
         free(nextElement);
-    } else if (nextElement->nextElement == NULL || currentElement == NULL) {
-        if (isInSet(*ppHeadElement, element)) {
-            *ppHeadElement = (*ppHeadElement)->nextElement;
-        } else {
-            printf("Error: element is not in set\n");
-        }
+        return pSet;
+    } else if (nextElement->nextElement == NULL) {
+        return pSet;
     } else {
-        removeSetElement(ppHeadElement, &nextElement, element);
+        pSet->nextElement = removeSetElement(pSet->nextElement, element);
+        return pSet;
     }
 }
 
 void printSet(set *pSet) {
-    char* formatStr;
-    switch (pSet->valueType)
-    {
+    char *formatStr;
+    switch (pSet->valueType) {
         case INT:
             formatStr = "%d ";
             break;
@@ -47,7 +48,7 @@ void printSet(set *pSet) {
         default:
             formatStr = "error\n";
     }
-    if (pSet->nextElement == NULL){
+    if (pSet->nextElement == NULL) {
         printf(formatStr, pSet->value);
     } else {
         printf(formatStr, pSet->value);
@@ -55,8 +56,8 @@ void printSet(set *pSet) {
     }
 }
 
-int isInSet(set *pSet, void* element) {
-    int isElement = 0;
+int isInSet(set *pSet, void *element) {
+    bool isElement = 0;
     if (pSet->valueType == STR) {
         isElement = strcmp(pSet->value, element) == 0 ? 1 : 0;
     } else {
