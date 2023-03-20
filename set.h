@@ -1,5 +1,6 @@
 #ifndef FLITA2_SET_H
 #define FLITA2_SET_H
+#include <stdbool.h>
 
 typedef enum type {
     INT,
@@ -23,7 +24,7 @@ set* removeSetElement(set *pSet, void *element);
 void printSet(set *pSet);
 
 // Checks if element is in set
-int isInSet(set *pSet, void *element);
+bool isInSet(set *pSet, void *element);
 
 
 #endif

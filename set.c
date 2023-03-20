@@ -24,10 +24,17 @@ set *removeSetElement(set *pSet, void *element) {
     if (pSet->value == element) {
         pSet = pSet->nextElement;
         return pSet;
-    } else if (nextElement->value == element) {
+    } else if (nextElement->value == element && nextElement->valueType == INT) {
         pSet->nextElement = nextElement->nextElement;
         free(nextElement);
         return pSet;
+    } else if (nextElement->valueType == STR) {
+        if (strcmp(nextElement->value, element) == 0) {
+            pSet->nextElement = nextElement->nextElement;
+            free(nextElement->value);
+            free(nextElement);
+            return pSet;
+        }
     } else if (nextElement->nextElement == NULL) {
         return pSet;
     } else {
@@ -56,18 +63,18 @@ void printSet(set *pSet) {
     }
 }
 
-int isInSet(set *pSet, void *element) {
-    bool isElement = 0;
+bool isInSet(set *pSet, void *element) {
+    bool isElement = false;
     if (pSet->valueType == STR) {
-        isElement = strcmp(pSet->value, element) == 0 ? 1 : 0;
+        isElement = strcmp(pSet->value, element) == 0;
     } else {
         isElement = pSet->value == element;
     }
 
     if (isElement) {
-        return 1;
+        return true;
     } else if (pSet->nextElement == NULL) {
-        return 0;
+        return false;
     } else {
         return isInSet(pSet->nextElement, element);
     }

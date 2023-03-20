@@ -8,11 +8,13 @@
                    b = a - b; \
                    a = a - b;
 
-void decToBin(int16_t decNumber, char *bin, const size_t MAX_LEN);
+#define MAX_STR_LEN  32
+
+void decToBin(int16_t decNumber, char *bin, const int16_t MAX_LEN);
 
 int main(int argc, char **argv) {
     if (argc == 1) {
-        printf("Error: no arguments\n");
+        puts("Error: no arguments");
         return 1;
     }
 
@@ -20,8 +22,8 @@ int main(int argc, char **argv) {
 
     for (int i = 1; i < argc; i++) {
         int16_t decNumber = atoi(argv[i]);
-        char *binNumber = malloc(32);
-        decToBin(decNumber, binNumber, 32);
+        char *binNumber = malloc(sizeof(char) * MAX_STR_LEN);
+        decToBin(decNumber, binNumber, MAX_STR_LEN);
         decNumbers = addSetElement(decNumbers, (void *) decNumber, INT);
         binNumbers = addSetElement(binNumbers, (void *) binNumber, STR);
     }
@@ -29,14 +31,18 @@ int main(int argc, char **argv) {
     printSet(decNumbers);
     putchar('\n');
     printSet(binNumbers);
-//    decNumbers = removeSetElement(decNumbers, (void*)12);
-//    printSet(decNumbers);
+    putchar('\n');
+    decNumbers = removeSetElement(decNumbers, (void*)12);
+    printSet(decNumbers);
+    putchar('\n');
+    binNumbers = removeSetElement(binNumbers, (void*)"11011110");
+    printSet(binNumbers);
 
 
     return 0;
 }
 
-void decToBin(int16_t decNumber, char *bin, const size_t MAX_LEN) {
+void decToBin(int16_t decNumber, char *bin, const int16_t MAX_LEN) {
     int16_t digitInd = 0;
     bool isLastDigit = 0;
     while (!isLastDigit && digitInd < MAX_LEN) {
